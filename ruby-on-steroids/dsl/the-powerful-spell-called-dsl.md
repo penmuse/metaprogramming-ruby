@@ -12,13 +12,13 @@ Basically, DSLs are mini-programming language of limited expressiveness focused 
 
 ### Types of DSLs
 
- There are two major types of DSLs: Internal and External DSLs. DSLs come in two forms – external and internal. External DSL’s exist independently from any other language, SQL, SASS are good examples of external DSLs. Internal DSL’s on the other hand live inside another programming language – for example RSpec is an internal DSL which is hosted within the Ruby programming language.
+ There are two major types of DSL: Internal and External DSL. External DSL’s exist independently from any other language, SQL, SASS, Cucumber, HAML, Jade are good examples of external DSLs. Internal DSL’s on the other hand live inside another programming language  for example RSpec is an internal DSL which is hosted within the Ruby programming language.
                                                                 
-Typically internal DSLs are easier to create but aren’t as flexible as external DSL’s. Internal DSL’s need not worry about parsing or grammars but must conform to valid syntax within the host language (eg. all RSpec code is valid Ruby syntax), conversely an external DSL can have any syntax its creator wishes at the cost more work to build a parser and grammar. Ruby, with its “the programmer is always right” feature set and very flexible syntax, makes a great platform for building internal DSLs.
+Typically internal DSLs are easier to create but are not as flexible as external DSL’s. Internal DSL’s need not worry about parsing or grammars but must conform to valid syntax within the host language (eg. all RSpec code is valid Ruby syntax), conversely an external DSL can have any syntax its creator wishes at the cost of more work to build a parser and grammar. Ruby, with its “the programmer is always right” feature set and very flexible syntax, makes a great platform for building internal DSLs.
 
 ### DSLs In the wild
 
-What makes rails very flexible and magical is the use of internal DSLs in a lot of places. Let's take a look at the different internal DSLs used in rails.
+What makes rails very flexible and magical is that it uses internal DSLs in a lot of places. Let's take a look at the different internal DSLs used in rails.
 #### 1. Rails Routing
 
 ```ruby
@@ -79,7 +79,7 @@ describe Array do
 end
 ```
 
-As you can see, Rails uses internal DSLs to solve very specific problems with the framework. 
+As you can see, Rails uses internal DSLs to solve very specific problems within the framework. Infact you can say that rails is one massive DSL used for building web applications that contains smaller DSLs.
 
 ### Creating our own DSL: mark_ruby
 
@@ -112,7 +112,7 @@ Which generates something like this.
 </html>
 ```
 
-Below is the actual DSL code. There are a lot metaprogramming magic happening here. Check out the `Ruby on Steroids` series if you need a refresher on metaprogramming. Most Ruby Internal DSLs are powered by metaprogramming and blocks. If you cna master both, then you have all the tools you need to build internal DSL
+Below is the actual DSL code. There are a lot metaprogramming magic happening here. Check out the `Ruby on Steroids` series if you need a refresher on metaprogramming. Most Ruby Internal DSLs are powered by metaprogramming and blocks. If you can master both, then you have all the tools you need to build internal DSL. Check out Ruby on Steroids series on `the magic of metaprogramming`
 
 ```ruby
 class MarkRuby
@@ -161,6 +161,26 @@ module Kernel
   end
 end
 ```
+
+In the `MarkRuby` class, `html_tag` method is used to generate any tag we need, it accepts as it's first argument the name of the tag. So if we want to create a div tag, we do it like this `html_tag(:div)`and this will return `<div></div>`, however we want to call the div method directly, instead of creating methods for all the available html tags like this:
+```ruby
+class MarkRuby
+  def div(text = "", options = {}, &block))
+    html_tag(:div, text = "", options = {}, &block)
+  end
+  
+ def body(text = "", options = {}, &block))
+   html_tag(:body, text = "", options = {}, &block)
+ end
+  
+ def html(text = "", options = {}, &block))
+   html_tag(:html, text = "", options = {}, &block)
+ end 
+end
+```
+We can take advantage of ruby's `method_missing` to DRY things up. For a refresher on method_missing, [check out this blog post](http://goodheads.io/2016/03/12/ruby-on-steroids-the-magic-of-metaprogramming-method-spells/). Also notice that `instance_eval` is been used in `html_tag` method. Check out [this blog post](http://goodheads.io/2016/02/27/ruby-on-steroids-the-magic-of-metaprogramming-part-1/) for a refresher on instance_eval.
+
+Finally I created a private method in the kernel module. This is where methods like `puts` exist. This makes it possible to call the method from virtually anywhere. In essence, we are creating a global method. Check out [this blog post](http://vaidehijoshi.github.io/blog/2015/05/12/investigating-rubys-global-functions-plus-kernel-module-with-puts/) for more information on ruby kernel.
 
 ### Final Thoughts
 
