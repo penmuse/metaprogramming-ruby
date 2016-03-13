@@ -33,15 +33,15 @@ person.aboki_name #=> "Name is Aboki"
 ### 2. method_missing
 ```ruby
   class Person
-  	def name
-  	  @name || "person"
-  	end
-  	
-  	def name=(val)
+    def name
+      @name || "person"
+    end
+    
+    def name=(val)
      return if val == "person"  
      @name = val
-   end
- end
+    end
+  end
  
  person = Person.new
  person.name #=> "person"
@@ -62,7 +62,7 @@ However, you are free to override method_missing in any of your classes and hand
       if method_name == :email
         "person.email@gmail.com"
       else
-		  "Hey, you just called the #{method_name} method /
+          "Hey, you just called the #{method_name} method /
          With these arguments: #{args.join(' ')} /
          But there is no such method"
       end
